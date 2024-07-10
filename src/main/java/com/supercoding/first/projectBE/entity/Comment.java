@@ -12,22 +12,23 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "post")
-public class Post {
+@Table(name = "comment")
+public class Comment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "post_id")
-  private Long postId;
+  @Column(name = "comment_id")
+  private Long commentId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column(name = "title", nullable = false, length = 255)
-  private String title;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id", nullable = false)
+  private Post post;
 
-  @Column(name = "content", columnDefinition = "text")
+  @Column(name = "content", nullable = false, columnDefinition = "text")
   private String content;
 
   @Column(name = "author", nullable = false, length = 10)

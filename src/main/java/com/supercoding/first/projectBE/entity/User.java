@@ -22,11 +22,11 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+  @Column(name = "user_id")
+  private Long userId;
 
-  @Column(name = "name", nullable = false)
-  private String name;
+  @Column(name = "author", nullable = false)
+  private String author;
 
   @Column(name = "email", nullable = false, unique = true)
   private String email;
