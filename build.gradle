@@ -41,6 +41,12 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	//jwt
+	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
+
+	//springboot security
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.3.0'
+
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
