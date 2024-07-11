@@ -24,6 +24,10 @@ spring:
         highlight_sql: true
     database: mysql
 
+
+
+
+
 logging:
   config: classpath:logback-spring-local.xml
   level:
