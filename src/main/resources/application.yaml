@@ -25,7 +25,9 @@ spring:
     database: mysql
 
 
-
+jwt:
+  issuer :
+  secret_key :
 
 
 logging:
