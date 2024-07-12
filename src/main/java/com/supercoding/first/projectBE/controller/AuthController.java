@@ -8,6 +8,7 @@ import com.supercoding.first.projectBE.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,9 @@ public class AuthController {
   private AuthService authService;
 
   @PostMapping("/signUp")
-  public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest signUpRequest) {
-    SignUpResponse signUpResponse = authService.signUpUser(signUpRequest);
+  public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest signUpRequest)
+      throws BadRequestException {
+    SignUpResponse signUpResponse = authService.signUp(signUpRequest);
     return ResponseEntity.status(HttpStatus.OK).body(signUpResponse);
   }
 

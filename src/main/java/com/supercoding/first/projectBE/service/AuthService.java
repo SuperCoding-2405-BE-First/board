@@ -2,7 +2,6 @@ package com.supercoding.first.projectBE.service;
 
 import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.LoginRequest;
-import com.supercoding.first.projectBE.dto.LoginResponse;
 import com.supercoding.first.projectBE.dto.SignUpRequest;
 import com.supercoding.first.projectBE.dto.SignUpResponse;
 import com.supercoding.first.projectBE.entity.User;
@@ -13,9 +12,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +27,16 @@ public class AuthService {
   private final TokenProvider tokenProvider;
 
   @Transactional
-  public SignUpResponse signUpUser(SignUpRequest signup) {
+  public SignUpResponse signUp(SignUpRequest signup) throws BadRequestException {
+
+
+    if(checkDuplicateEmail(signup.getEmail())) {
+      throw new BadRequestException("중복된 이메일입니다.");
+    }
+
+    if(!checkPassword(signup.getPassword())) {
+      throw new BadRequestException("비밀번호는 대소문자, 숫자를 포함한 5글자 이상이여야합니다.");
+    }
 
     // 비밀번호 암호화
     String encryptPassword = signup.getPassword();
@@ -80,6 +85,16 @@ public class AuthService {
   public String convertTimestampToString(LocalDateTime localDateTime) {
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     return dateFormat.format(localDateTime);
+  }
+
+  private boolean checkDuplicateEmail(String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    return optionalUser.isPresent();
+  }
+
+  private boolean checkPassword(String password) {
+    String regExp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{5,}$";
+    return password.matches(regExp);
   }
 
 }
