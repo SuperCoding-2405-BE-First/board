@@ -5,6 +5,7 @@ import com.supercoding.first.projectBE.dto.LoginResponse;
 import com.supercoding.first.projectBE.dto.SignUpRequest;
 import com.supercoding.first.projectBE.dto.SignUpResponse;
 import com.supercoding.first.projectBE.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class AuthController {
   @Autowired
   private AuthService authService;
 
+  @Operation(summary = "회원가입")
   @PostMapping("/signUp")
   public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest signUpRequest)
       throws BadRequestException {
@@ -34,6 +36,7 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).body(signUpResponse);
   }
 
+  @Operation(summary = "로그아웃")
   @GetMapping("/logout")
   public String logout(HttpServletRequest request, HttpServletResponse response) {
     new SecurityContextLogoutHandler().logout(request, response,
@@ -41,11 +44,13 @@ public class AuthController {
     return "success";
   }
 
+  @Operation(summary = "로그인")
   @PostMapping("/login")
-  public HttpEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) throws Exception {
+  public HttpEntity<?> login(@RequestBody LoginRequest loginRequest,
+      HttpServletResponse httpServletResponse) throws Exception {
 
     String token = authService.login(loginRequest);
-    httpServletResponse.addHeader("token", token);
+    httpServletResponse.setHeader("Authorization", "Bearer " + token);
 
     return new ResponseEntity<>(
         LoginResponse.builder().accessToken(token).build(), HttpStatus.OK

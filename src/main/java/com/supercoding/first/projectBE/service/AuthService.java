@@ -29,12 +29,11 @@ public class AuthService {
   @Transactional
   public SignUpResponse signUp(SignUpRequest signup) throws BadRequestException {
 
-
-    if(checkDuplicateEmail(signup.getEmail())) {
+    if (checkDuplicateEmail(signup.getEmail())) {
       throw new BadRequestException("중복된 이메일입니다.");
     }
 
-    if(!checkPassword(signup.getPassword())) {
+    if (!checkPassword(signup.getPassword())) {
       throw new BadRequestException("비밀번호는 대소문자, 숫자를 포함한 5글자 이상이여야합니다.");
     }
 
@@ -62,24 +61,24 @@ public class AuthService {
         .build();
   }
 
-    @Transactional
-    public String login(LoginRequest loginRequest) throws Exception {
+  @Transactional
+  public String login(LoginRequest loginRequest) throws Exception {
 
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        User user = userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
-        if(optionalUser.isEmpty()) {
-            throw new BadRequestException("존재하지 않는 회원입니다.");
-        }
-
-        // 암호화된 password를 디코딩한 값과 입력한 패스워드 값이 다르면 null 반환
-        if(!bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            throw new Exception("비밀번호가 일치하지 않습니다.");
-        }
-
-      return tokenProvider.generateToken(user, Duration.ofDays(1));
+    String email = loginRequest.getEmail();
+    String password = loginRequest.getPassword();
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    User user = userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+    if (optionalUser.isEmpty()) {
+      throw new BadRequestException("존재하지 않는 회원입니다.");
     }
+
+    // 암호화된 password를 디코딩한 값과 입력한 패스워드 값이 다르면 null 반환
+    if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+      throw new Exception("비밀번호가 일치하지 않습니다.");
+    }
+
+    return tokenProvider.generateToken(user, Duration.ofDays(1));
+  }
 
 
   public String convertTimestampToString(LocalDateTime localDateTime) {
