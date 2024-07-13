@@ -24,6 +24,20 @@ spring:
         highlight_sql: true
     database: mysql
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+  # request 기본 타입
+  default-consumes-media-type: application/json
+  # response 기본 타입
+  default-produces-media-type: application/json
+  # 해당 패턴에 매칭되는 controller만 swagger-ui에 노출한다.
+  paths-to-match:
+    - /api/**
+  # 현재 시큐리티를 통해 로그인 처리를 하고 있기 때문에 로그인에 대한 엔드포인트 추가
+  show-login-endpoint: true
 
 jwt:
   issuer :

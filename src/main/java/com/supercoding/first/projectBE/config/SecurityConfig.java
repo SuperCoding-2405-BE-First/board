@@ -24,6 +24,11 @@ public class SecurityConfig {
 
   private final UserDetailService userDetailService;
 
+  public static final String[] swaggerArray = {
+      "/swagger-ui/**",
+      "/api-docs/**"
+  };
+
   //스프링 시큐리티 기능 비활성화
   @Bean
   public WebSecurityCustomizer configure() {
@@ -38,6 +43,7 @@ public class SecurityConfig {
         .authorizeHttpRequests((authorizeRequest) ->
             authorizeRequest
                 .requestMatchers("/", "/signUp", "/login").permitAll()
+                .requestMatchers(swaggerArray).permitAll()
                 .anyRequest().authenticated()
         )
         .logout((logout) -> logout
