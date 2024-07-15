@@ -26,7 +26,8 @@ public class SecurityConfig {
 
   public static final String[] swaggerArray = {
       "/swagger-ui/**",
-      "/api-docs/**"
+      "/api-docs/**",
+          "/api/**"
   };
 
   //스프링 시큐리티 기능 비활성화
