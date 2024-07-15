@@ -43,12 +43,12 @@ public class SecurityConfig {
     return http
         .authorizeHttpRequests((authorizeRequest) ->
             authorizeRequest
-                .requestMatchers("/", "/signUp", "/login").permitAll()
+                .requestMatchers("/", "/api/signUp", "/api/login").permitAll()
                 .requestMatchers(swaggerArray).permitAll()
                 .anyRequest().authenticated()
         )
         .logout((logout) -> logout
-            .logoutSuccessUrl("/login")
+            .logoutSuccessUrl("/api/login")
             .invalidateHttpSession(true)
         )
         .csrf(AbstractHttpConfigurer::disable)
