@@ -7,6 +7,7 @@ import com.supercoding.first.projectBE.entity.User;
 import com.supercoding.first.projectBE.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +32,13 @@ public class PostService {
         return postRepository.findById(id).orElse(null);
     }
 
-    public PostResponse createPost(PostRequest createPost, Authentication auth) {
-     //   Authentication auth = SecurityContextHolder.getContext().getAuthentication(); // 확인
-        System.out.println("??"+auth.toString()); // 확인
+    public PostResponse createPost(PostRequest createPost) {
+
       //  System.out.println("??2"+request.toString());
         // 토큰으로 유저 Entity 확인 으로 수정 예정
         User user = new User();
-        user.setUserId(9999L);
-        user.setAuthor("테스트 계정");
+        user.setUserId(2L);
+        user.setAuthor("test01");
         Post post = new Post(createPost,user);
         Post savePost = postRepository.save(post);
         return new PostResponse(savePost);
