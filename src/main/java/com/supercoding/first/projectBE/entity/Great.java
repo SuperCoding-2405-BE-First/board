@@ -1,20 +1,22 @@
 package com.supercoding.first.projectBE.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "greate")
-public class Greate implements Serializable {
+@Table(name = "great")
+public class Great implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "greate_id")
-    private Long greateId;
+    @Column(name = "great_id")
+    private Long greatId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

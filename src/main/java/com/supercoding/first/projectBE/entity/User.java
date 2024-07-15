@@ -1,12 +1,8 @@
 package com.supercoding.first.projectBE.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 import java.util.Collection;
@@ -18,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
@@ -39,8 +35,14 @@ public class User implements UserDetails {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "created_at")
+  @Column(name = "created_at", nullable = false,updatable = false )
   private LocalDateTime createdAt;
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+  }
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

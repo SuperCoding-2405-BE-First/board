@@ -10,9 +10,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "comment")
+@EntityListeners(CommentEntityListener.class)
 public class Comment {
 
   @Id
@@ -34,7 +35,7 @@ public class Comment {
   @Column(name = "author", nullable = false, length = 10)
   private String author;
 
-  @Column(name = "created_at", nullable = false)
+  @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
   @Column(name = "updated_at")
