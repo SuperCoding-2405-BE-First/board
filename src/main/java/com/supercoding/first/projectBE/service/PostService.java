@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +33,13 @@ public class PostService {
         return postRepository.findById(id).orElse(null);
     }
 
-    public PostResponse createPost(PostRequest createPost) {
+    public PostResponse createPost(PostRequest createPost, Authentication auth) {
 
       //  System.out.println("??2"+request.toString());
         // 토큰으로 유저 Entity 확인 으로 수정 예정
+
         User user = new User();
-        user.setUserId(2L);
+        user.setUserId(3L);
         user.setAuthor("test01");
         Post post = new Post(createPost,user);
         Post savePost = postRepository.save(post);

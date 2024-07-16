@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +34,9 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest requestDto) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); // 확인
-        System.out.println("??"+auth.toString()); // 확인
-        PostResponse responseDto =  postService.createPost(requestDto);
+    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest requestDto,Authentication auth) {
+
+        PostResponse responseDto =  postService.createPost(requestDto,auth);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
