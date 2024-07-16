@@ -11,7 +11,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 추후 인증키(토큰) 에서 받아온 유저 Email 값을 기준으로 수정 예정
-//    @Query("SELECT p FROM Post p WHERE p.user.email = :userEmail")
-    List<Post> findByUserEmail(String userEmail);
+    List<Post> findByUserUserId(Long userId);
 
 }

@@ -5,6 +5,8 @@ import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Post;
 import com.supercoding.first.projectBE.entity.User;
 import com.supercoding.first.projectBE.repository.PostRepository;
+import com.supercoding.first.projectBE.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,17 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class PostService {
 
     private final PostRepository postRepository;
-
-    @Autowired
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final UserRepository userRepository;
 
     public List<Post> getAllPosts() {
         return postRepository.findAll();
@@ -63,8 +63,15 @@ public class PostService {
         return false;
     }
 
-    public List<Post> findPostsByEmail(String email){
-        return postRepository.findByUserEmail((email));
+    public List<Post> getPostsByUserEmail(String email){
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return postRepository.findByUserUserId(user.getUserId());
+        } else {
+            // 사용자 이메일이 없는 경우 예외 처리
+            throw new RuntimeException("User not found with email: " + email);
+        }
     }
 
 }

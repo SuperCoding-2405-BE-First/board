@@ -7,8 +7,7 @@ import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Post;
 import com.supercoding.first.projectBE.repository.PostRepository;
 import com.supercoding.first.projectBE.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,16 +18,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
     private final PostRepository postRepository;
-    @Autowired
-    public PostController(PostService postService, PostRepository postRepository) {
-        this.postService = postService;
-        this.postRepository = postRepository;
-    }
+
     @GetMapping("/posts") // 게시물 전체 조회
     public List<PostResponse> getAllPosts(){
         return postRepository.findAll().stream()
@@ -82,7 +78,7 @@ public class PostController {
 
     @GetMapping("/posts/search/{email}")
     public List<Post> getPostsByEmail(@PathVariable String email) {
-        return postService.findPostsByEmail(email);
+        return postService.getPostsByUserEmail(email);
     }
 
 }
