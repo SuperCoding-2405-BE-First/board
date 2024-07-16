@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,6 +57,9 @@ public class Post {
   public void preUpdate() {
     this.updatedAt = LocalDateTime.now();
   }
+
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL ,orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
   // 게시글 작성 : 생성자
   public Post(PostRequest requestDto, User user) {

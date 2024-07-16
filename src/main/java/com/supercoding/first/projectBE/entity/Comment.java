@@ -3,6 +3,9 @@ package com.supercoding.first.projectBE.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,5 +43,8 @@ public class Comment {
 
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
+
+  @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL ,orphanRemoval = true)
+  private List<Reply> replies = new ArrayList<>();
 
 }

@@ -18,11 +18,15 @@ public class Great implements Serializable {
     @Column(name = "great_id")
     private Long greatId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "post_id")
+    private Long postId;
+
+    public Great(Long postId , Long userId){
+        this.postId = postId;
+        this.userId = userId;
+    }
 }
