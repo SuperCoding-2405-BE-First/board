@@ -85,4 +85,11 @@ public class TokenProvider {
   public String getEmail(String token) {
     return getClaims(token).get("email", String.class);
   }
+
+  public String getAccessToken(String token) {
+    if (token != null && token.startsWith("Bearer ")) {
+      return token.substring("Bearer ".length());
+    }
+    return null;
+  }
 }
