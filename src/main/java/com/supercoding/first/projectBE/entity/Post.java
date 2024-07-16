@@ -23,8 +23,8 @@ public class Post {
   @Column(name = "post_id")
   private Long postId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinColumn(name = "user_id" , nullable = false)
   private User user;
 
   @NotBlank

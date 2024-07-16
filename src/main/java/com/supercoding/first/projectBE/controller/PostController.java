@@ -2,6 +2,7 @@ package com.supercoding.first.projectBE.controller;
 
 
 
+import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.PostRequest;
 import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Post;
@@ -10,9 +11,6 @@ import com.supercoding.first.projectBE.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +24,8 @@ public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
 
+    private final TokenProvider tokenProvider;
+
     @GetMapping("/posts") // 게시물 전체 조회
     public List<PostResponse> getAllPosts(){
         return postRepository.findAll().stream()
@@ -33,10 +33,18 @@ public class PostController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/posts")
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest requestDto,Authentication auth) {
+    @PostMapping("/posts") // 게시물 추가 API
+    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest requestDto,@RequestHeader("Authorization") String token) {
+        // 토큰 값에서 'Bearer ' 부분을 제거
+        String jwtToken = token.substring(7);
 
-        PostResponse responseDto =  postService.createPost(requestDto,auth);
+        //토큰 유효성 검사
+        if(!tokenProvider.validToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String email = tokenProvider.getEmail(jwtToken);
+
+        PostResponse responseDto =  postService.createPost(requestDto,email);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
