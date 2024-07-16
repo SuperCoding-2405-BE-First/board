@@ -4,6 +4,7 @@ import com.supercoding.first.projectBE.dto.PostRequest;
 import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Post;
 import com.supercoding.first.projectBE.entity.User;
+import com.supercoding.first.projectBE.repository.GreatRepository;
 import com.supercoding.first.projectBE.repository.PostRepository;
 import com.supercoding.first.projectBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
+    private final GreatRepository greatRepository;
 
     public List<Post> getAllPosts() {
         return postRepository.findAll();
@@ -57,6 +60,8 @@ public class PostService {
         Post existingPost = postRepository.findById(id).orElse(null);
         if (existingPost != null) {
             postRepository.delete(existingPost);
+            // 좋아요 삭제
+            greatRepository.deleteAllByPostId(id);
             return true;
         }
         return false;
