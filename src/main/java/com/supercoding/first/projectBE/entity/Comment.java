@@ -48,7 +48,4 @@ public class Comment {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL ,orphanRemoval = true)
-  private List<Reply> replies = new ArrayList<>();
-
 }
