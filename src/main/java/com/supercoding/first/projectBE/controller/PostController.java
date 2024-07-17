@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -81,9 +80,9 @@ public class PostController {
     }
 
     // 게시물 검색 : 작성자 이메일 API
-    @GetMapping("/posts/search/{author_email}")
-    public List<Post> getPostsByEmail(@PathVariable String author_email) {
-        return postService.getPostsByUserEmail(author_email);
+    @GetMapping("/posts/search")
+    public List<PostResponse> getPostsByEmail(@RequestParam(name="author_email") String email) {
+        return postService.getPostsByUserEmail(email);
     }
 
 }

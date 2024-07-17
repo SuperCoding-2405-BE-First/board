@@ -70,11 +70,13 @@ public class PostService {
         return false;
     }
 
-    public List<Post> getPostsByUserEmail(String email){
+    public List<PostResponse> getPostsByUserEmail(String email){
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            return postRepository.findByUserUserId(user.getUserId());
+            return postRepository.findByUserUserId(user.getUserId()).stream()
+                    .map(PostResponse::new)
+                    .collect(Collectors.toList());
         } else {
             // 사용자 이메일이 없는 경우 예외 처리
             throw new RuntimeException("User not found with email: " + email);
