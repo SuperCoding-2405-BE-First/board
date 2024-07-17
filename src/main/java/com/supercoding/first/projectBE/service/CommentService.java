@@ -1,6 +1,7 @@
 package com.supercoding.first.projectBE.service;
 
-import com.supercoding.first.projectBE.dto.CommentRequest;
+import com.supercoding.first.projectBE.dto.CommentAlterRequest;
+import com.supercoding.first.projectBE.dto.CommentPostRequest;
 import com.supercoding.first.projectBE.dto.CommentResponse;
 import com.supercoding.first.projectBE.entity.Comment;
 import com.supercoding.first.projectBE.entity.Post;
@@ -9,9 +10,7 @@ import com.supercoding.first.projectBE.exception.CommentNotFoundException;
 import com.supercoding.first.projectBE.exception.PostNotFoundException;
 import com.supercoding.first.projectBE.exception.UserNotEqualException;
 import com.supercoding.first.projectBE.repository.CommentRepository;
-import com.supercoding.first.projectBE.repository.PostRepository;
 import com.supercoding.first.projectBE.repository.UserRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class CommentService {
   private final CommentRepository commentRepository;
   private final PostService postService;
 
-  public CommentResponse createComment(CommentRequest request, Long userId)
+  public CommentResponse createComment(CommentPostRequest request, Long userId)
       throws PostNotFoundException {
     User existUser = userRepository.findByUserId(userId);
     Post existPost = postService.getPostById(request.getPostId());
@@ -42,7 +41,7 @@ public class CommentService {
         .user(existUser)
         .post(existPost)
         .content(request.getContent())
-        .author(existUser.getUsername())
+        .author(existUser.getAuthor())
         .build();
 
     comment = commentRepository.save(comment);
@@ -50,7 +49,7 @@ public class CommentService {
 
   }
 
-  public Comment updateComment(CommentRequest request, Long userId, Long commentId)
+  public Comment updateComment(CommentAlterRequest request, Long userId, Long commentId)
       throws CommentNotFoundException, UserNotEqualException {
 
     Comment existComment = commentRepository.findById(commentId).orElse(null);

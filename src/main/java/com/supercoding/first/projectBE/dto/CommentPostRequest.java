@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CommentRequest {
+public class CommentPostRequest {
 
   private Long postId;
   private String content;

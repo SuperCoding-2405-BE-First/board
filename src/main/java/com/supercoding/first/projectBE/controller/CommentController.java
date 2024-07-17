@@ -1,7 +1,8 @@
 package com.supercoding.first.projectBE.controller;
 
 import com.supercoding.first.projectBE.config.jwt.TokenProvider;
-import com.supercoding.first.projectBE.dto.CommentRequest;
+import com.supercoding.first.projectBE.dto.CommentAlterRequest;
+import com.supercoding.first.projectBE.dto.CommentPostRequest;
 import com.supercoding.first.projectBE.dto.CommentResponse;
 import com.supercoding.first.projectBE.entity.Comment;
 import com.supercoding.first.projectBE.exception.CommentNotFoundException;
@@ -29,7 +30,7 @@ public class CommentController {
   private final TokenProvider tokenProvider;
 
   @PostMapping("/comments")
-  public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest, @RequestHeader("Authorization") String token)
+  public ResponseEntity<CommentResponse> createComment(@RequestBody CommentPostRequest commentPostRequest, @RequestHeader("Authorization") String token)
       throws PostNotFoundException {
 
     String accessToken = tokenProvider.getAccessToken(token);
@@ -40,7 +41,7 @@ public class CommentController {
 
     Long userId = tokenProvider.getUserId(accessToken);
 
-    CommentResponse response = commentService.createComment(commentRequest, userId);
+    CommentResponse response = commentService.createComment(commentPostRequest, userId);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
 
   }
@@ -48,7 +49,7 @@ public class CommentController {
 
   @PutMapping("/comments/{comment_id}")
   public ResponseEntity<CommentResponse> updateComment(@PathVariable Long comment_id,
-      @RequestBody CommentRequest commentRequest, @RequestHeader("Authorization") String token)
+                                                       @RequestBody CommentAlterRequest commentAlterRequest, @RequestHeader("Authorization") String token)
       throws CommentNotFoundException, UserNotEqualException {
 
     String accessToken = tokenProvider.getAccessToken(token);
@@ -57,7 +58,7 @@ public class CommentController {
     }
 
     Long userId = tokenProvider.getUserId(accessToken);
-    Comment response = commentService.updateComment(commentRequest, userId, comment_id);
+    Comment response = commentService.updateComment(commentAlterRequest, userId, comment_id);
     return ResponseEntity.ok().body(new CommentResponse(response));
 
   }
