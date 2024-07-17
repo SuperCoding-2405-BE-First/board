@@ -44,14 +44,21 @@ public class GreatController {
         }
 
         Long userId = tokenProvider.getUserId(jwtToken);
-        System.out.println(userId);
         Great great = greatService.createGreat(greatRequest.getPostId(),userId);
         return new ResponseEntity<>(great,HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/great/{great_id}") // 좋아요 삭제 (해제)
-    public ResponseEntity<Void> deletePost(@PathVariable Long great_id) {
-        boolean deleted = greatService.deletePost(great_id);
+    @DeleteMapping("/great/{post_id}") // 좋아요 삭제 (해제)
+    public ResponseEntity<Void> deletePost(@PathVariable Long post_id, @RequestHeader("Authorization") String token) {
+        // 토큰 값에서 'Bearer ' 부분을 제거
+        String jwtToken = token.substring(7);
+
+        //토큰 유효성 검사
+        if(!tokenProvider.validToken(jwtToken)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Long userId = tokenProvider.getUserId(jwtToken);
+        boolean deleted = greatService.deletePost(post_id,userId);
         if (!deleted) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -10,5 +10,7 @@ public interface GreatRepository extends JpaRepository<Great,Long> {
 
     boolean existsByPostIdAndUserId(Long postId,Long userId);
 
+    Great findByPostIdAndUserId(Long postId,Long userId);
+
     void deleteAllByPostId(Long postId);
 }

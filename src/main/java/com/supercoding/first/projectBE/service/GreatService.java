@@ -18,8 +18,8 @@ public class GreatService {
         return greatRepository.countByPostId(postId);
     }
 
-    public boolean deletePost(Long id) {
-        Great existingGreat = greatRepository.findById(id).orElse(null);
+    public boolean deletePost(Long postId, Long userId ) {
+        Great existingGreat = greatRepository.findByPostIdAndUserId(postId,userId);
         if (existingGreat != null) {
             greatRepository.delete(existingGreat);
             return true;
