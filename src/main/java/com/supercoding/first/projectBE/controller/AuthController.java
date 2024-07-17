@@ -28,18 +28,18 @@ public class AuthController {
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
-  public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest signUpRequest)
+  public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest)
       throws BadRequestException {
     SignUpResponse signUpResponse = authService.signUp(signUpRequest);
-    return ResponseEntity.status(HttpStatus.OK).body(signUpResponse);
+    return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.");
   }
 
   @Operation(summary = "로그아웃")
   @GetMapping("/logout")
-  public String logout(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
     new SecurityContextLogoutHandler().logout(request, response,
         SecurityContextHolder.getContext().getAuthentication());
-    return "success";
+    return new ResponseEntity<>("로그아웃되었습니다.", HttpStatus.OK);
   }
 
   @Operation(summary = "로그인")
@@ -51,7 +51,7 @@ public class AuthController {
     httpServletResponse.setHeader("Authorization", "Bearer " + token);
 
     return new ResponseEntity<>(
-        LoginResponse.builder().accessToken(token).build(), HttpStatus.OK
+        "로그인이 성공적으로 완료되었습니다.", HttpStatus.OK
     );
 
   }

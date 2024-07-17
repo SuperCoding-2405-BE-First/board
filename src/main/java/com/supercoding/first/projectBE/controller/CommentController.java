@@ -4,21 +4,27 @@ import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.CommentAlterRequest;
 import com.supercoding.first.projectBE.dto.CommentPostRequest;
 import com.supercoding.first.projectBE.dto.CommentResponse;
+import com.supercoding.first.projectBE.dto.LoginResponse;
 import com.supercoding.first.projectBE.entity.Comment;
 import com.supercoding.first.projectBE.exception.CommentNotFoundException;
 import com.supercoding.first.projectBE.exception.PostNotFoundException;
 import com.supercoding.first.projectBE.exception.UserNotEqualException;
 import com.supercoding.first.projectBE.service.CommentService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,8 +35,16 @@ public class CommentController {
   private final CommentService commentService;
   private final TokenProvider tokenProvider;
 
+  @GetMapping("/comments")
+  public Map<String, List<CommentResponse>> getPostIdComments(@RequestParam("post_id") Long postId) {
+    List<CommentResponse> comments = commentService.getPostIdComments(postId);
+    Map map = new HashMap();
+    map.put("comments", comments);
+    return map;
+  }
+
   @PostMapping("/comments")
-  public ResponseEntity<CommentResponse> createComment(@RequestBody CommentPostRequest commentPostRequest, @RequestHeader("Authorization") String token)
+  public ResponseEntity<String> createComment(@RequestBody CommentPostRequest commentPostRequest, @RequestHeader("Authorization") String token)
       throws PostNotFoundException {
 
     String accessToken = tokenProvider.getAccessToken(token);
@@ -42,7 +56,7 @@ public class CommentController {
     Long userId = tokenProvider.getUserId(accessToken);
 
     CommentResponse response = commentService.createComment(commentPostRequest, userId);
-    return new ResponseEntity<>(response, HttpStatus.CREATED);
+    return new ResponseEntity<>("댓글이 성공적으로 작성되었습니다.", HttpStatus.CREATED);
 
   }
 

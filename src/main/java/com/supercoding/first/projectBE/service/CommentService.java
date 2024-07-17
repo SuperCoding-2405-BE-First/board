@@ -11,6 +11,8 @@ import com.supercoding.first.projectBE.exception.PostNotFoundException;
 import com.supercoding.first.projectBE.exception.UserNotEqualException;
 import com.supercoding.first.projectBE.repository.CommentRepository;
 import com.supercoding.first.projectBE.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,10 @@ public class CommentService {
   private final UserRepository userRepository;
   private final CommentRepository commentRepository;
   private final PostService postService;
+
+  public List<CommentResponse> getPostIdComments(Long postId) {
+    return commentRepository.findPostIdBy(postId);
+  }
 
   public CommentResponse createComment(CommentPostRequest request, Long userId)
       throws PostNotFoundException {
