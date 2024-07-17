@@ -58,6 +58,7 @@ public class Post {
     this.updatedAt = LocalDateTime.now();
   }
 
+  // 게시물 삭제 시 댓글도 삭제 되도록 cascade 적용
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL ,orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
 
