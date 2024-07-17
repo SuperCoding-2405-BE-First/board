@@ -6,6 +6,7 @@ import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.PostRequest;
 import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Post;
+import com.supercoding.first.projectBE.exception.PostNotFoundException;
 import com.supercoding.first.projectBE.repository.PostRepository;
 import com.supercoding.first.projectBE.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,12 +29,15 @@ public class PostController {
 
     // 게시물 전체 조회
     @GetMapping("/posts")
-    public List<PostResponse> getAllPosts(){
-        return postService.getAllPosts();
+    public Map<String,List<PostResponse>> getAllPosts(){ // API 조회 예시에 맞게 맵에 리스트를 담아 리턴 하도록 수정
+        List<PostResponse> posts = postService.getAllPosts();
+        Map postsMap = new HashMap();
+        postsMap.put("posts",posts);
+        return postsMap;
     }
     // 게시물 추가 API
     @PostMapping("/posts")
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest requestDto,@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> createPost(@RequestBody PostRequest requestDto,@RequestHeader("Authorization") String token) {
         // 토큰 값에서 'Bearer ' 부분을 제거
         String jwtToken = token.substring(7);
 
@@ -40,9 +46,8 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         String email = tokenProvider.getEmail(jwtToken);
-
-        PostResponse responseDto =  postService.createPost(requestDto,email);
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        postService.createPost(requestDto,email);
+        return new ResponseEntity<>("게시물이 성공적으로 작성 되었습니다.", HttpStatus.CREATED);
     }
 
 
@@ -61,7 +66,7 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long post_id,
             @RequestBody PostRequest postRequest
-    ) {
+    ) throws PostNotFoundException {
         Post updatedPost = postService.updatePost(post_id, postRequest);
         if (updatedPost == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

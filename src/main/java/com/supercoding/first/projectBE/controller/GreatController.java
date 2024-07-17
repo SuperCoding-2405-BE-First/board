@@ -20,17 +20,17 @@ public class GreatController {
     private final TokenProvider tokenProvider;
 
     @GetMapping("/great/check/{post_id}") // 좋아요 여부 확인
-    public boolean greatCheck(@PathVariable Long post_id,@RequestHeader("Authorization") String token ){
+    public ResponseEntity<Boolean> greatCheck(@PathVariable Long post_id,@RequestHeader("Authorization") String token ){
         // 토큰 값에서 'Bearer ' 부분을 제거
         String jwtToken = token.substring(7);
 
         //토큰 유효성 검사
         if(!tokenProvider.validToken(jwtToken)){
-            return false;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Long userId = tokenProvider.getUserId(jwtToken);
-        return greatService.greatCheck(post_id,userId);
+        return ResponseEntity.ok(greatService.greatCheck(post_id,userId));
     }
 
     @PostMapping("/great") // 좋아요 추가 (표시)
@@ -59,8 +59,8 @@ public class GreatController {
     }
 
     @GetMapping("/great/count/{post_id}") // 좋아요 카운트 확인
-    public Long getPostGreatCount(@PathVariable Long post_id){
-        return greatService.getPostGreatCount(post_id);
+    public ResponseEntity<Long> getPostGreatCount(@PathVariable Long post_id){
+        return ResponseEntity.ok(greatService.getPostGreatCount(post_id));
     }
 
 }

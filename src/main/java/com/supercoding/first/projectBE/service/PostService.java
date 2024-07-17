@@ -4,6 +4,7 @@ import com.supercoding.first.projectBE.dto.PostRequest;
 import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Post;
 import com.supercoding.first.projectBE.entity.User;
+import com.supercoding.first.projectBE.exception.PostNotFoundException;
 import com.supercoding.first.projectBE.repository.GreatRepository;
 import com.supercoding.first.projectBE.repository.PostRepository;
 import com.supercoding.first.projectBE.repository.UserRepository;
@@ -49,14 +50,14 @@ public class PostService {
         return new PostResponse(savePost);
     }
 
-    public Post updatePost(Long id, PostRequest updatedPost) {
+    public Post updatePost(Long id, PostRequest updatedPost) throws PostNotFoundException {
         Post existingPost = postRepository.findById(id).orElse(null);
-        if (existingPost != null) {
-            existingPost.setTitle(updatedPost.getTitle());
-            existingPost.setContent(updatedPost.getContent());
-            return postRepository.save(existingPost);
+        if(existingPost == null){
+            throw new PostNotFoundException("게시글이 존재하지 않습니다.");
         }
-        return null;
+        existingPost.setTitle(updatedPost.getTitle());
+        existingPost.setContent(updatedPost.getContent());
+        return postRepository.save(existingPost);
     }
 
     public boolean deletePost(Long id) {
@@ -79,7 +80,7 @@ public class PostService {
                     .collect(Collectors.toList());
         } else {
             // 사용자 이메일이 없는 경우 예외 처리
-            throw new RuntimeException("User not found with email: " + email);
+            throw new UsernameNotFoundException("해당 유저를 찾지 못함 ");
         }
     }
 

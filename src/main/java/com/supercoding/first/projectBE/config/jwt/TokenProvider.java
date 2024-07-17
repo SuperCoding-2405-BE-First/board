@@ -38,6 +38,7 @@ public class TokenProvider {
         .setExpiration(expiry)
         .setSubject(user.getEmail())
         .claim("id", user.getUserId())
+            .claim("email",user.getEmail())
         .signWith(getSigningKey())
         .compact();
   }
