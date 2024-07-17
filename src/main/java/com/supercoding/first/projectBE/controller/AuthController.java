@@ -27,7 +27,7 @@ public class AuthController {
   private AuthService authService;
 
   @Operation(summary = "회원가입")
-  @PostMapping("/signUp")
+  @PostMapping("/signup")
   public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest signUpRequest)
       throws BadRequestException {
     SignUpResponse signUpResponse = authService.signUp(signUpRequest);

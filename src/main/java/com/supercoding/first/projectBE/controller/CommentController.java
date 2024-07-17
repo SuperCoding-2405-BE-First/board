@@ -28,7 +28,7 @@ public class CommentController {
   private final CommentService commentService;
   private final TokenProvider tokenProvider;
 
-  @PostMapping("/comment")
+  @PostMapping("/comments")
   public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest, @RequestHeader("Authorization") String token)
       throws PostNotFoundException {
 
@@ -46,8 +46,8 @@ public class CommentController {
   }
 
 
-  @PutMapping("/comment/{commentId}")
-  public ResponseEntity<CommentResponse> updateComment(@PathVariable Long commentId,
+  @PutMapping("/comments/{comment_id}")
+  public ResponseEntity<CommentResponse> updateComment(@PathVariable Long comment_id,
       @RequestBody CommentRequest commentRequest, @RequestHeader("Authorization") String token)
       throws CommentNotFoundException, UserNotEqualException {
 
@@ -57,13 +57,13 @@ public class CommentController {
     }
 
     Long userId = tokenProvider.getUserId(accessToken);
-    Comment response = commentService.updateComment(commentRequest, userId, commentId);
+    Comment response = commentService.updateComment(commentRequest, userId, comment_id);
     return ResponseEntity.ok().body(new CommentResponse(response));
 
   }
 
-  @DeleteMapping("comment/{commentId}")
-  public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @RequestHeader("Authorization") String token)
+  @DeleteMapping("comments/{comment_id}")
+  public ResponseEntity<Void> deleteComment(@PathVariable Long comment_id, @RequestHeader("Authorization") String token)
       throws CommentNotFoundException, UserNotEqualException {
 
     String accessToken = tokenProvider.getAccessToken(token);
@@ -72,7 +72,7 @@ public class CommentController {
     }
     Long userId = tokenProvider.getUserId(accessToken);
 
-    if (!commentService.deleteComment(commentId, userId)) {
+    if (!commentService.deleteComment(comment_id, userId)) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

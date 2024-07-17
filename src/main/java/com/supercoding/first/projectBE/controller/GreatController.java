@@ -19,8 +19,8 @@ public class GreatController {
     private final GreatService greatService;
     private final TokenProvider tokenProvider;
 
-    @GetMapping("/great/check/{PostId}") // 좋아요 여부 확인
-    public boolean greatCheck(@PathVariable Long PostId,@RequestHeader("Authorization") String token ){
+    @GetMapping("/great/check/{post_id}") // 좋아요 여부 확인
+    public boolean greatCheck(@PathVariable Long post_id,@RequestHeader("Authorization") String token ){
         // 토큰 값에서 'Bearer ' 부분을 제거
         String jwtToken = token.substring(7);
 
@@ -30,7 +30,7 @@ public class GreatController {
         }
 
         Long userId = tokenProvider.getUserId(jwtToken);
-        return greatService.greatCheck(PostId,userId);
+        return greatService.greatCheck(post_id,userId);
     }
 
     @PostMapping("/great") // 좋아요 추가 (표시)
@@ -49,18 +49,18 @@ public class GreatController {
         return new ResponseEntity<>(great,HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/great/{greatId}") // 좋아요 삭제 (해제)
-    public ResponseEntity<Void> deletePost(@PathVariable Long greatId) {
-        boolean deleted = greatService.deletePost(greatId);
+    @DeleteMapping("/great/{great_id}") // 좋아요 삭제 (해제)
+    public ResponseEntity<Void> deletePost(@PathVariable Long great_id) {
+        boolean deleted = greatService.deletePost(great_id);
         if (!deleted) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/great/count/{postId}") // 좋아요 카운트 확인
-    public Long getPostGreatCount(@PathVariable Long postId){
-        return greatService.getPostGreatCount(postId);
+    @GetMapping("/great/count/{post_id}") // 좋아요 카운트 확인
+    public Long getPostGreatCount(@PathVariable Long post_id){
+        return greatService.getPostGreatCount(post_id);
     }
 
 }

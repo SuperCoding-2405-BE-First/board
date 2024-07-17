@@ -23,17 +23,15 @@ public class PostController {
 
     private final PostService postService;
     private final PostRepository postRepository;
-
     private final TokenProvider tokenProvider;
 
-    @GetMapping("/posts") // 게시물 전체 조회
+    // 게시물 전체 조회
+    @GetMapping("/posts")
     public List<PostResponse> getAllPosts(){
-        return postRepository.findAll().stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
+        return postService.getAllPosts();
     }
-
-    @PostMapping("/posts") // 게시물 추가 API
+    // 게시물 추가 API
+    @PostMapping("/posts")
     public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest requestDto,@RequestHeader("Authorization") String token) {
         // 토큰 값에서 'Bearer ' 부분을 제거
         String jwtToken = token.substring(7);
@@ -50,9 +48,9 @@ public class PostController {
 
 
     // 게시물 상세 조회 API
-    @GetMapping("/posts/{postId}")
-    public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
-        Post post = postService.getPostById(postId);
+    @GetMapping("/posts/{post_id}")
+    public ResponseEntity<PostResponse> getPostById(@PathVariable Long post_id) {
+        Post post = postService.getPostById(post_id);
         if (post == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -60,12 +58,12 @@ public class PostController {
     }
 
     // 게시물 수정 API (제목과 내용만 수정 가능)
-    @PutMapping("/posts/{postId}")
+    @PutMapping("/posts/{post_id}")
     public ResponseEntity<PostResponse> updatePost(
-            @PathVariable Long postId,
+            @PathVariable Long post_id,
             @RequestBody PostRequest postRequest
     ) {
-        Post updatedPost = postService.updatePost(postId, postRequest);
+        Post updatedPost = postService.updatePost(post_id, postRequest);
         if (updatedPost == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -73,20 +71,19 @@ public class PostController {
     }
 
     // 게시물 삭제 API
-    @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-        boolean deleted = postService.deletePost(postId);
+    @DeleteMapping("/posts/{post_id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long post_id) {
+        boolean deleted = postService.deletePost(post_id);
         if (!deleted) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
-
-    @GetMapping("/posts/search/{email}")
-    public List<Post> getPostsByEmail(@PathVariable String email) {
-        return postService.getPostsByUserEmail(email);
+    // 게시물 검색 : 작성자 이메일 API
+    @GetMapping("/posts/search/{author_email}")
+    public List<Post> getPostsByEmail(@PathVariable String author_email) {
+        return postService.getPostsByUserEmail(author_email);
     }
 
 }

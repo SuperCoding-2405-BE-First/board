@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +26,10 @@ public class PostService {
 
     private final GreatRepository greatRepository;
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponse> getAllPosts() {
+        return  postRepository.findAll().stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
     }
 
     public Post getPostById(Long id) {
