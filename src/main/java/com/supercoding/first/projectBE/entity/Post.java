@@ -60,7 +60,7 @@ public class Post {
 
   // 게시물 삭제 시 댓글도 삭제 되도록 cascade 적용
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL ,orphanRemoval = true)
-  private List<Comment> comments = new ArrayList<>();
+  private List<Comment> comments ;
 
   // 게시글 작성 : 생성자
   public Post(PostRequest requestDto, User user) {
