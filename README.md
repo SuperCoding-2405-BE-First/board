@@ -22,3 +22,10 @@
 - Github : https://github.com/dev-owen/fe-dashboard
 - Demo : https://fe-dashboard-teal.vercel.app/
 
+
+# 구현 절차 
+- Intasll - Mysql80
+- src/main/resources/application.yaml ( update local datasource )
+- only accept http://localhost:8080/api/signup & http://localhost:8080/api/login ( Join & login ) [ * signup config password Mix Condition ( UpperCase , LowerCase , Number , Length more than 5 ) ] 
+- SuccessLogin than "Authorization Value" to config to Your Postman Type for "Bearer Token"
+  
