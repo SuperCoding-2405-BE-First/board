@@ -3,6 +3,7 @@ package com.supercoding.first.projectBE.service;
 import com.supercoding.first.projectBE.dto.CommentAlterRequest;
 import com.supercoding.first.projectBE.dto.CommentPostRequest;
 import com.supercoding.first.projectBE.dto.CommentResponse;
+import com.supercoding.first.projectBE.dto.PostResponse;
 import com.supercoding.first.projectBE.entity.Comment;
 import com.supercoding.first.projectBE.entity.Post;
 import com.supercoding.first.projectBE.entity.User;
@@ -28,7 +29,7 @@ public class CommentService {
   private final PostService postService;
 
   public List<CommentResponse> getPostIdComments(Long postId) {
-    return commentRepository.findPostIdBy(postId);
+    return commentRepository.findByPostPostId(postId).stream().map(CommentResponse::new).collect(Collectors.toList());
   }
 
   public CommentResponse createComment(CommentPostRequest request, Long userId)
