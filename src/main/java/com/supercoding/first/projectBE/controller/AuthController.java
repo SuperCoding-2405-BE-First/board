@@ -1,5 +1,6 @@
 package com.supercoding.first.projectBE.controller;
 
+import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.LoginRequest;
 import com.supercoding.first.projectBE.dto.LoginResponse;
 import com.supercoding.first.projectBE.dto.SignUpRequest;
@@ -28,6 +29,7 @@ public class AuthController {
 
   @Autowired
   private AuthService authService;
+  private final TokenProvider tokenProvider;
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
@@ -41,7 +43,14 @@ public class AuthController {
 
   @Operation(summary = "로그아웃")
   @GetMapping("/logout")
-  public ResponseEntity<Map> logout(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<Map> logout(HttpServletRequest request, HttpServletResponse response,@RequestHeader("Authorization") String token) {
+
+    String accessToken = tokenProvider.getAccessToken(token);
+
+    if(!tokenProvider.validToken(accessToken)){
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
     new SecurityContextLogoutHandler().logout(request, response,
         SecurityContextHolder.getContext().getAuthentication());
     Map map = new HashMap();
