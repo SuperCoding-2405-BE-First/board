@@ -12,6 +12,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,7 @@ public class AuthService {
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final TokenProvider tokenProvider;
+  private final AuthenticationManager authenticationManager;
 
   @Transactional
   public SignUpResponse signUp(SignUpRequest signup) throws BadRequestException {
@@ -76,6 +81,9 @@ public class AuthService {
     if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
       throw new Exception("비밀번호가 일치하지 않습니다.");
     }
+
+    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
     return tokenProvider.generateToken(user, Duration.ofDays(1));
   }
