@@ -35,7 +35,7 @@ public class AuthController {
       throws BadRequestException {
     SignUpResponse signUpResponse = authService.signUp(signUpRequest);
     Map map = new HashMap();
-    map.put("message","댓글이 성공적으로 작성되었습니다.");
+    map.put("message","회원가입이 완료되었습니다.");
     return ResponseEntity.ok().body(map);
   }
 
