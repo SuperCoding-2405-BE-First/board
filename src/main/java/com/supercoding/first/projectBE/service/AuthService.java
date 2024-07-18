@@ -2,6 +2,7 @@ package com.supercoding.first.projectBE.service;
 
 import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.LoginRequest;
+import com.supercoding.first.projectBE.dto.LogoutRequest;
 import com.supercoding.first.projectBE.dto.SignUpRequest;
 import com.supercoding.first.projectBE.dto.SignUpResponse;
 import com.supercoding.first.projectBE.entity.User;
@@ -86,6 +87,17 @@ public class AuthService {
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     return tokenProvider.generateToken(user, Duration.ofDays(1));
+  }
+
+  public boolean logout(LogoutRequest logoutRequest) throws BadRequestException, NotFoundException {
+    String email = logoutRequest.getEmail();
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    User user = userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+    if (optionalUser.isEmpty()) {
+      throw new BadRequestException("존재하지 않는 회원입니다.");
+    }
+
+    return true;
   }
 
 

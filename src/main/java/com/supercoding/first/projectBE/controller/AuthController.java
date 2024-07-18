@@ -3,6 +3,7 @@ package com.supercoding.first.projectBE.controller;
 import com.supercoding.first.projectBE.config.jwt.TokenProvider;
 import com.supercoding.first.projectBE.dto.LoginRequest;
 import com.supercoding.first.projectBE.dto.LoginResponse;
+import com.supercoding.first.projectBE.dto.LogoutRequest;
 import com.supercoding.first.projectBE.dto.SignUpRequest;
 import com.supercoding.first.projectBE.dto.SignUpResponse;
 import com.supercoding.first.projectBE.service.AuthService;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,16 +45,18 @@ public class AuthController {
 
   @Operation(summary = "로그아웃")
   @GetMapping("/logout")
-  public ResponseEntity<Map> logout(HttpServletRequest request, HttpServletResponse response,@RequestHeader("Authorization") String token) {
+  public ResponseEntity<Map> logout(@RequestBody LogoutRequest logoutRequest, HttpServletRequest request, HttpServletResponse response,@RequestHeader("Authorization") String token)
+      throws BadRequestException, NotFoundException {
 
     String accessToken = tokenProvider.getAccessToken(token);
 
-    if(!tokenProvider.validToken(accessToken)){
+    if(!tokenProvider.validToken(accessToken) || !authService.logout(logoutRequest)){
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     new SecurityContextLogoutHandler().logout(request, response,
         SecurityContextHolder.getContext().getAuthentication());
+
     Map map = new HashMap();
     map.put("message","로그아웃 되었습니다 ");
     return ResponseEntity.ok().body(map);
