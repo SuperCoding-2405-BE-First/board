@@ -36,15 +36,20 @@ public class CommentController {
   private final TokenProvider tokenProvider;
 
   @GetMapping("/comments")
-  public Map<String, List<CommentResponse>> getPostIdComments(@RequestParam("post_id") Long postId) {
+  public ResponseEntity<Map<String, List<CommentResponse>>> getPostIdComments(@RequestParam("post_id") Long postId, @RequestHeader("Authorization") String token) {
+    String accessToken = tokenProvider.getAccessToken(token);
+
+    if(!tokenProvider.validToken(accessToken)){
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
     List<CommentResponse> comments = commentService.getPostIdComments(postId);
     Map map = new HashMap();
     map.put("comments", comments);
-    return map;
+    return ResponseEntity.ok().body(map);
   }
 
   @PostMapping("/comments")
-  public ResponseEntity<String> createComment(@RequestBody CommentPostRequest commentPostRequest, @RequestHeader("Authorization") String token)
+  public ResponseEntity<Map> createComment(@RequestBody CommentPostRequest commentPostRequest, @RequestHeader("Authorization") String token)
       throws PostNotFoundException {
 
     String accessToken = tokenProvider.getAccessToken(token);
@@ -56,13 +61,15 @@ public class CommentController {
     Long userId = tokenProvider.getUserId(accessToken);
 
     CommentResponse response = commentService.createComment(commentPostRequest, userId);
-    return new ResponseEntity<>("댓글이 성공적으로 작성되었습니다.", HttpStatus.CREATED);
+    Map map = new HashMap();
+    map.put("message","댓글이 성공적으로 작성되었습니다.");
+    return new ResponseEntity<>(map, HttpStatus.CREATED);
 
   }
 
 
   @PutMapping("/comments/{comment_id}")
-  public ResponseEntity<CommentResponse> updateComment(@PathVariable Long comment_id,
+  public ResponseEntity<Map> updateComment(@PathVariable Long comment_id,
                                                        @RequestBody CommentAlterRequest commentAlterRequest, @RequestHeader("Authorization") String token)
       throws CommentNotFoundException, UserNotEqualException {
 
@@ -72,8 +79,10 @@ public class CommentController {
     }
 
     Long userId = tokenProvider.getUserId(accessToken);
-    Comment response = commentService.updateComment(commentAlterRequest, userId, comment_id);
-    return ResponseEntity.ok().body(new CommentResponse(response));
+    commentService.updateComment(commentAlterRequest, userId, comment_id);
+    Map map = new HashMap();
+    map.put("message","댓글이 성공적으로 수정되었습니다.");
+    return ResponseEntity.ok().body(map);
 
   }
 

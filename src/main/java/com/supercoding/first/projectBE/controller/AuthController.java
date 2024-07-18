@@ -18,6 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -28,32 +31,36 @@ public class AuthController {
 
   @Operation(summary = "회원가입")
   @PostMapping("/signup")
-  public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest)
+  public ResponseEntity<Map> signUp(@RequestBody SignUpRequest signUpRequest)
       throws BadRequestException {
     SignUpResponse signUpResponse = authService.signUp(signUpRequest);
-    return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.");
+    Map map = new HashMap();
+    map.put("message","댓글이 성공적으로 작성되었습니다.");
+    return ResponseEntity.ok().body(map);
   }
 
   @Operation(summary = "로그아웃")
   @GetMapping("/logout")
-  public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<Map> logout(HttpServletRequest request, HttpServletResponse response) {
     new SecurityContextLogoutHandler().logout(request, response,
         SecurityContextHolder.getContext().getAuthentication());
-    return new ResponseEntity<>("로그아웃되었습니다.", HttpStatus.OK);
+    Map map = new HashMap();
+    map.put("message","로그아웃 되었습니다 ");
+    return ResponseEntity.ok().body(map);
   }
 
   @Operation(summary = "로그인")
   @PostMapping("/login")
-  public HttpEntity<?> login(@RequestBody LoginRequest loginRequest,
+  public ResponseEntity<Map> login(@RequestBody LoginRequest loginRequest,
       HttpServletResponse httpServletResponse) throws Exception {
 
     String token = authService.login(loginRequest);
     httpServletResponse.setHeader("Authorization", "Bearer " + token);
 
-    return new ResponseEntity<>(
-            LoginResponse.builder().accessToken(token).message("로그인이 성공적으로 완료되었습니다.").build(), HttpStatus.OK
-    );
-
+    Map map = new HashMap();
+    map.put("Authorization",token);
+    map.put("message","로그인이 성공적으로 완료되었습니다.");
+    return ResponseEntity.ok(map);
   }
 
 }
