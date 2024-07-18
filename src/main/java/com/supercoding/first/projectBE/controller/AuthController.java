@@ -51,7 +51,7 @@ public class AuthController {
     httpServletResponse.setHeader("Authorization", "Bearer " + token);
 
     return new ResponseEntity<>(
-        "로그인이 성공적으로 완료되었습니다.", HttpStatus.OK
+            LoginResponse.builder().accessToken(token).message("로그인이 성공적으로 완료되었습니다.").build(), HttpStatus.OK
     );
 
   }
