@@ -12,7 +12,7 @@
 김슬아 : 사용자 및 댓글 관련 기능 구현
 
 # 구현 API LIST 
-![image](https://github.com/user-attachments/assets/b3cd053c-cd7a-4a16-b79a-1ce10d36e446)
+![image](https://github.com/user-attachments/assets/8c412974-c2fc-4cc1-aa63-34a2f841e62a)
 
 
 # 조건 사항 
