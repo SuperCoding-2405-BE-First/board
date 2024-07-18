@@ -18,6 +18,7 @@
 # 조건 사항 
 진행 방식
 프론트가 구현된 게시판 깡통 web page가 제공되고, 해당 web Page가 필요한 API를 구현한다.
-- Github: https://github.com/dev-owen/fe-dashboard
-- Demo: https://fe-dashboard-teal.vercel.app/
-- Guide : https://supercoding.notion.site/BE-1-Project-1e8e77b1a37e4b64bf96e2c6fe005a0b
+- Condition : [https://supercoding.notion.site/BE-1-Project-1e8e77b1a37e4b64bf96e2c6fe005a0b](https://supercoding.notion.site/_-_BE-18c8cba102184f58aefad28d51e6c1a1)
+- Github : https://github.com/dev-owen/fe-dashboard
+- Demo : https://fe-dashboard-teal.vercel.app/
+
