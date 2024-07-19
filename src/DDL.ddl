@@ -37,24 +37,6 @@ create table comment
         foreign key (user_id) references user (user_id)
 );
 
-create table reply
-(
-    reply_id   bigint auto_increment                 primary key comment '답글 ID (PK)',
-    comment_id bigint                                not null comment '댓글 ID (FK)',
-    user_id    bigint                                not null comment '사용자 ID (FK)',
-    post_id    bigint                                not null comment '게시물 ID (FK)',
-    content    text                               not null comment '답글 내용',
-    author     varchar(10)                        not null comment '작성자 : user_id',
-    created_at datetime default CURRENT_TIMESTAMP not null comment '생성일자',
-    updated_at datetime                           null comment '수정일자',
-    constraint reply_comment_id_fk
-        foreign key (comment_id) references comment (comment_id),
-    constraint reply_post_id_fk
-        foreign key (post_id) references post (post_id),
-    constraint reply_user_id_fk
-        foreign key (user_id) references user (user_id)
-);
-
 create table great
 (
     great_id   bigint auto_increment                 primary key comment '좋아요 ID (PK)',
