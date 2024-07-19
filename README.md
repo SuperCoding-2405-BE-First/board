@@ -4,3 +4,5 @@ https://intriguing-jackfruit-83b.notion.site/1-BE-e75643321d484625b865da3ad13e11
 # ERD
 ![image](https://github.com/user-attachments/assets/74a96a3f-cecb-4f08-bf7c-065a5d2bace5)
 
+# Requirement Process
+- Install Mysql80 Server Your Local Computer & Setting board/src/main/resource/application.yaml : datasource
