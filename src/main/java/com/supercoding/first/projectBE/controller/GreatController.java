@@ -38,10 +38,10 @@ public class GreatController {
         return ResponseEntity.ok(greatService.greatCheck(post_id,userId));
     }
 
-    @Operation(summary = "좋아요 설정(추가)", description = "게시물에 대한 좋아요 설정(추가)")
+    @Operation(summary = "좋아요 설정(추가/삭제)", description = "게시물에 대한 좋아요 설정(추가)")
     @ApiResponse(responseCode = "200", description = "생성 객체 및 , 201 생성코드 반환")
     @PostMapping("/great")
-    public ResponseEntity<Great> createGreat(@RequestBody GreatRequest greatRequest, @RequestHeader("Authorization") String token){
+    public ResponseEntity<Map> createGreat(@RequestBody GreatRequest greatRequest, @RequestHeader("Authorization") String token){
         String jwtToken = token.substring(7);// 토큰 값에서 'Bearer ' 부분을 제거
 
         //토큰 유효성 검사
@@ -50,26 +50,21 @@ public class GreatController {
         }
 
         Long userId = tokenProvider.getUserId(jwtToken);
-        Great great = greatService.createGreat(greatRequest.getPostId(),userId);
-        return new ResponseEntity<>(great,HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "좋아요 해제(삭제)", description = "게시물에 대한 좋아요 해제(삭제)")
-    @ApiResponse(responseCode = "204", description = "204 No Content 상태 반환")
-    @DeleteMapping("/great/{post_id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long post_id, @RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);// 토큰 값에서 'Bearer ' 부분을 제거
-
-        //토큰 유효성 검사
-        if(!tokenProvider.validToken(jwtToken)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        Long postId = greatRequest.getPostId();
+        Map resultMap = new HashMap<String,String>();
+        ResponseEntity<Boolean> greatCheck= greatCheck(postId,token);
+        if(!greatCheck.getBody()) { // 좋아요 설정 체크가 안되어있는 경우
+            Great great = greatService.createGreat(greatRequest.getPostId(),userId);
+            resultMap.put("result",true);
+            resultMap.put("message",postId+"번 게시글에 대한 좋아요가 '설정' 되었습니다.");
+            return ResponseEntity.ok().body(resultMap);
+        }else{
+            boolean deleted = greatService.deletePostGreat(postId,userId);
+            resultMap.put("result",false);
+            resultMap.put("message",postId+"번 게시글에 대한 좋아요가 '해제' 되었습니다.");
+            return ResponseEntity.ok().body(resultMap);
         }
-        Long userId = tokenProvider.getUserId(jwtToken);
-        boolean deleted = greatService.deletePost(post_id,userId);
-        if (!deleted) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
     @Operation(summary = "좋아요 수 확인", description = "게시물에 대한 좋아요 개수 확인")
